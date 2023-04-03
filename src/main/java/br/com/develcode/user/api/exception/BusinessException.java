@@ -1,50 +1,25 @@
 package br.com.develcode.user.api.exception;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-public class BusinessException extends RuntimeException {
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-	private static final long serialVersionUID = 7482536665167468178L;
+@ControllerAdvice	
+public class BusinessException extends ResponseEntityExceptionHandler {
 
-	private Integer status;
+	private static final String USUARIO_V1_CADASTRAR = "/usuario/v1/cadastrar";
 
-    private String message;
-
-    private List<String> details;
-
-	public BusinessException() {
-		super();
-	}
-
-	public BusinessException(Integer status, String message, List<String> details) {
-		super();
-		this.status = status;
-		this.message = message;
-		this.details = details;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public List<String> getDetails() {
-		return details;
-	}
-
-	public void setDetails(List<String> details) {
-		this.details = details;
-	}	
-    
+	@Override
+	  protected ResponseEntity<Object> handleMissingServletRequestParameter(
+	      MissingServletRequestParameterException ex, HttpHeaders headers,
+	      HttpStatus status, WebRequest request) {
+			return new ResponseEntity<>(new ApiErrorResponse(USUARIO_V1_CADASTRAR, HttpStatus.BAD_REQUEST.value(),ex,"Parametro ["+ex.getParameterName()+"] ausente na requisicao", LocalDateTime.now()),status);
+	      
+	  }
 }

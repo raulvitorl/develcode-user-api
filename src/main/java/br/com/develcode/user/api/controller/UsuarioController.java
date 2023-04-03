@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.develcode.user.api.usecase.CadastrarUsuarioUseCase;
+import br.com.develcode.user.api.usecase.RecuperarUsuarioPorCodigoUseCase;
 
 @RestController
 @RequestMapping("/usuario")
@@ -25,6 +28,9 @@ public class UsuarioController {
 	@Autowired
 	private CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
 	
+	@Autowired
+	private RecuperarUsuarioPorCodigoUseCase recuperarUsuarioPorCodigooUseCase;
+		
 	@PostMapping(path = "/v1/cadastrar" , consumes = {"multipart/form-data"})
 	public ResponseEntity<?> cadastrarUsuario(
 			@RequestParam(value = "codigo") String codigo,
@@ -36,5 +42,9 @@ public class UsuarioController {
 		return cadastrarUsuarioUseCase.execute(codigo, nome, dataNascimento, foto, request);
 	}
 
+	@GetMapping("/v1/recuperar/{codigo}")
+	public ResponseEntity<?> recperarUsuarioPorCodigo(@PathVariable("codigo") String codigo) throws Exception {
+	    return recuperarUsuarioPorCodigooUseCase.execute(codigo);
+	}
 	
 }
